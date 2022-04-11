@@ -1,3 +1,7 @@
+# Assignment: ASSIGNMENT 4.2-2
+# Name: Burden, Joshua
+# Date: 2022-04-03
+
 #We interact with a few datasets in this course, one you are already familiar with, the 2014 American Community Survey and the second is a Housing dataset, t
 #hat provides real estate transactions recorded from 1964 to 2016.  For this exercise, you need to start practicing some data transformation steps – which will carry into next week, 
 #as you learn some additional methods.  For this week, using either dataset (or one of your own – although I will let you know ahead of time that the Housing dataset is used for a later assignment, 

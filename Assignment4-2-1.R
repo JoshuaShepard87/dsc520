@@ -1,3 +1,7 @@
+# Assignment: ASSIGNMENT 4.2-1
+# Name: Burden, Joshua
+# Date: 2022-04-03
+
 x <- read.csv(url('http://content.bellevue.edu/cst/dsc/520/id/resources/scores.csv'))
 x
 
