@@ -1,0 +1,108 @@
+---
+title: "ASSIGNMENT 4"
+author: "Joshua Burden"
+date: '2022-04-24'
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+bibliography: bibliography.bib
+---
+
+
+
+# Markdown Basics
+
+## Favorite Foods
+1. Pizza
+2. Quesadillas
+3. BBQ Brisket
+
+## Images
+![All Cases (Log Plot)](/Users/joshua/Documents/PERSONAL_GITHUB_REPOS/dsc520/completed/assignment04/plots/10-all-cases-log.png){width=50%}
+
+## Add a Quote
+> “Be strong I whispered to my wifi signal”
+> 
+> ― White people from the Internet
+
+## Add an Equation:
+
+$$A_{m,n} =
+ \begin{pmatrix}
+  a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+  a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
+  \vdots  & \vdots  & \ddots & \vdots  \\
+  a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+ \end{pmatrix}$$
+
+
+## Add a Footnote
+
+See footnote^[FootNote]
+
+## Add Citations
+
+* R for Everyone [@lander2014r]
+
+* Discovering Statistics Using R [@field2012discovering]
+
+***
+
+# Inline Code
+```{r, include=FALSE}
+library(ggplot2)
+theme_set(theme_minimal())
+setwd("/Users/joshua/Documents/PERSONAL_GITHUB_REPOS/dsc520/")
+heights_df <- read.csv("data/r4ds/heights.csv")
+covid_df <- read.csv("data/nytimes/covid-19-data/us-states.csv")
+california_df <- covid_df[ which( covid_df$state == "California"), ]
+ny_df <- covid_df[ which( covid_df$state == "New York"), ]
+florida_df <- covid_df[ which( covid_df$state == "Florida"), ]
+```
+
+## NY Times COVID-19 Data
+```{r, echo=FALSE}
+## Scale the y axis using `scale_y_log10()`
+ggplot(data=florida_df, aes(x=date, group=1)) +
+  geom_line(aes(y = cases, colour = "Florida")) +
+  geom_line(data=ny_df, aes(y = cases,colour="New York")) +
+  geom_line(data=california_df, aes(y = cases, colour="California")) +
+  scale_colour_manual("",
+                      breaks = c("Florida", "New York", "California"),
+                      values = c("darkred", "darkgreen", "steelblue")) +
+  xlab(" ") + ylab("Cases") + scale_y_log10()
+```
+
+## R4DS Height vs Earnings
+```{r, echo=FALSE}
+(ggplot(heights_df, aes(x=height, y=earn, col=sex)) 
+  + geom_point() 
+  + ggtitle("Height vs. Earnings") 
+  + xlab("Height (Inches)") 
+  + ylab("Earnings (Dollars)"))
+```
+
+# Tables
+```{r, include=FALSE}
+## Create a dataframe called characters_df using the following information from LOTR
+name <- c("Apple", "Banana", "Tomato", "Broccoli", "Ham", "Gouda")
+kind <- c("Fruit", "Fruit", "Fruit", "Vegetable", "Meat", "Cheese")
+is_meat <- c(FALSE, FALSE,FALSE,FALSE,TRUE,FALSE)
+is_fruit <- c(TRUE, TRUE, TRUE,FALSE, FALSE, FALSE)
+weight <- c(200,77,250,300,1600,1000)
+foods_df <- data.frame(name, kind, is_meat, is_fruit, weight)
+```
+
+## Knitr Table with Kable
+```{r}
+knitr::kable(foods_df, caption = "Good foods")
+```
+
+## Pandoc Table
+```{r}
+library(pander)
+pandoc.table(foods_df, caption = "Good Foods")
+```
+
+# References
