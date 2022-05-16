@@ -1,0 +1,232 @@
+---
+title: "Housing Data"
+author: "Burden Joshua"
+Date: 2022-05-15
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+require(devtools)
+install_version("QuantPsyc", version="1.5", repos="http://cran.us.r-project.org")
+#install.packages("https://cran.r-project.org/src/contrib/Archive/fArma/fArma_3042.81.tar.gz", repos = , type = "source") 
+
+```
+
+
+```{r, echo=FALSE, include=FALSE}
+#load libraries
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(psych)
+library(GGally)
+library(purrr)
+library(car)
+library(QuantPsyc)
+```
+
+
+```{r echo=TRUE}
+## Set workding directory to read source datasets.
+setwd("/Users/joshua/Documents/PERSONAL_GITHUB_REPOS/dsc520/Housing")
+## Read housing dataset
+housing_data_df <- read_excel("../data/week-7-housing.xlsx")
+```
+
+
+
+# Explain any transformations or modifications you made to the dataset
+
+#### Sales Date and Sales Price should conform to the xxx_xxx style like the other column names
+
+```{r}
+colnames(housing_data_df)[c(1,2)]<-c("sales_date", "sale_price")
+colnames(housing_data_df)
+```
+
+
+# Create two variables; one that will contain the variables Sale Price and Square Foot of Lot (same variables used from previous assignment on simple regression) and one that will contain Sale Price and several additional predictors of your choice. Explain the basis for your additional predictor selections.
+
+```{r}
+housing_data_df_lm1 <- lm(formula = sale_price ~ sq_ft_lot, data = housing_data_df)
+housing_data_df_lm2 <- lm(formula = sale_price ~ zip5 + bedrooms + year_built + square_feet_total_living, sq_ft_lot, data = housing_data_df)
+```
+
+#### Answer
+- data includes items columns such as zip5, and bedrooms as these items often are major factors in predicting the sale price of a home
+- additional parameters that were chosen were the square_feet_total_living and the year built.  
+- Houses should be go up in price based on the amount of area it covers and potentially when it was built
+
+
+# Execute a summary() function on two variables defined in the previous step to compare the model results. 
+
+##### sumamary housing_data_df_lm1
+```{r}
+summary(housing_data_df_lm1)
+```
+
+##### sumamary housing_data_df_lm2
+```{r}
+summary(housing_data_df_lm2)
+```
+
+
+# What are the R2 and Adjusted R2 statistics? Explain what these results tell you about the overall model. 
+#### answer
+
+- R2 for housing_data_df_lm1: 0.01 while adjusted: 0.01
+- R2 for housing_data_df_lm2: 0.11 while adjusted: 0.11
+- Rsquared for first variable: 0.01435
+- adjusted Rsquared for the first variable: 0.01428
+- Rsquared for second variable: 0.2222
+- adjusted Rsquared for the second variable: 0.02219
+
+
+# Did the inclusion of the additional predictors help explain any large variations found in Sale Price?
+> the overall model improved when adding addtional variables
+
+# Considering the parameters of the multiple regression model you have created. What are the standardized betas for each parameter and what do the values indicate?
+
+```{r}
+lm.beta(housing_data_df_lm1)
+```
+
+```{r}
+lm.beta(housing_data_df_lm2)
+```
+
+> The standardized betas for the linear models indicate that the sale_price increased by 0.11 standard deviations when there is an increase in st
+
+# Calculate the confidence intervals for the parameters in your model and explain what the results indicate.
+
+```{r}
+confint(housing_data_df_lm1)
+confint(housing_data_df_lm2)
+```
+> The confidence intervals calculated for "housing_data_df_lm1" have a small range. This indicates that the predictor's _b_ value is close to the real _b_ value. The confidence intervals calculated for "housing_data_df_lm2" have a larger range. In addition, these values cross zero and include negative values. This indicates that the sale price can increase or decrease depending on the number of bedrooms. This makes the output for sale price not consistent. However, the other variables do have better consistency and shorter range.
+
+
+# Assess the improvement of the new model compared to your original model (simple regression model) by testing whether this change is significant by performing an analysis of variance.
+
+```{r}
+model1_aov <- aov(`sale_price`~sq_ft_lot, data = housing_data_df)
+summary(model1_aov)
+model2_aov <- aov(`sale_price` ~ `sales_date` + sq_ft_lot + bedrooms + bath_full_count + year_built, data = housing_data_df)
+summary(model2_aov)
+```
+
+# Perform casewise diagnostics to identify outliers and/or influential cases, storing each function's output in a dataframe assigned to a unique variable name.
+
+```{r}
+saleprice_var <- data.frame(std.residuals=rstandard(housing_data_df_lm2),
+                            stud.residuals=rstudent(housing_data_df_lm2),
+                            cooks.dist=cooks.distance(housing_data_df_lm2),
+                            dfbeta=dfbeta(housing_data_df_lm2),
+                            dffit=dffits(housing_data_df_lm2),
+                            leverage=hatvalues(housing_data_df_lm2),
+                            covariance.ratios=covratio(housing_data_df_lm2))
+```
+
+
+# Calculate the standardized residuals using the appropriate command, specifying those that are +-2, storing the results of large residuals in a variable you create.
+
+```{r}
+saleprice_var$large_residual <- saleprice_var$std.residuals > 2 | saleprice_var$std.residuals < -2
+```
+
+# Use the appropriate function to show the sum of large residuals.
+
+```{r}
+sum(saleprice_var$large_residual)
+```
+
+# Which specific variables have large residuals (only cases that evaluate as TRUE)?
+```{r}
+large_res <- filter(saleprice_var, saleprice_var$large_residual == TRUE)
+```
+
+# Investigate further by calculating the leverage, cooks distance, and covariance rations. Comment on all cases that are problematics.
+```{r echo = FALSE}
+leverage = hatvalues(housing_data_df_lm1)
+cooks.dist = cooks.distance(housing_data_df_lm2)
+covariance.ratios = covratio(housing_data_df_lm2)
+saleprice_var[saleprice_var$large_residual , c("leverage" , "cooks.dist", "covariance.ratios") ]
+```
+### This is not easy to observe. Taking a look at sample again by filtering residuals that are over a +/- 2/3 threshold
+
+```{r}
+#Percentage of sample with residuals over (+/-)2
+nrow(housing_data_df)
+nrow(large_res)
+322/12865*100
+#calculate average leverage for comparison with 4 parameters
+avg_leverage = (4+1)/12865
+avg_leverage
+#calculate limit(s) leverage should not exceed
+leverage_limit= avg_leverage*2
+leverage_limit
+leverage_limit3 = avg_leverage*3
+leverage_limit3
+#get count of samples over leverage limit
+large_res%>%
+  filter(leverage > leverage_limit)%>%
+  nrow()
+large_res%>%
+  filter(leverage > leverage_limit3)%>%
+  nrow()
+```
+
+> this produced a result of 99 cases outside of a threshold that go past a boundary for average leverage. Once tripled the results were 43. 
+
+
+# Perform the necessary calculations to assess the assumption of independence and state if the condition is met or not.
+
+```{r}
+dwt(housing_data_df_lm1)
+dwt(housing_data_df_lm2)
+```
+
+
+> The D-W Statistic for both housing_data_df_lm1 and housing_data_df_lm1 contain values that are less than 1 and remotely close to a value of 2. Since the values aren't close to 2 we can safely assume taht eh independence of our two models are not met.
+
+
+
+# Perform the necessary calculations to assess the assumption of no multicollinearity and state if the condition is met or not.
+
+```{r}
+vif(housing_data_df_lm2)
+```
+
+
+
+# Visually check the assumptions related to the residuals using the plot() and hist() functions. Summarize what each graph is informing you of and if any anomalies are present.
+
+
+## Histogram Chart
+```{r echo=FALSE}
+hist(saleprice_var$std.residuals,  breaks="Sturges", xlab = "Standardized Residuals")
+```
+
+> I am not observing any annomolies from this historgram chart
+
+## Plot
+```{r echo=FALSE}
+plot(saleprice_var$stud.residuals, saleprice_var$leverage, main="Scatterplot",xlab="Studendized Residuals", ylab="leverage ", pch=19)
+```
+
+> Again I see no annomolies
+
+# Overall, is this regression model unbiased? If an unbiased regression model, what does this tell us about the sample vs. the entire population model?
+
+> This regression model appears to be unbiased.
+
+

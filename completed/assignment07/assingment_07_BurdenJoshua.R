@@ -1,6 +1,6 @@
 # Assignment: ASSIGNMENT 7
-# Name: Lastname, Firstname
-# Date: 2010-02-14
+# Name: Burden, Joshua
+# Date: 2022-05-15
 
 ## Set the working directory to the root of your DSC 520 directory
 setwd("/Users/joshua/Documents/PERSONAL_GITHUB_REPOS/dsc520")
