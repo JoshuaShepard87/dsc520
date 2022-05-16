@@ -24,11 +24,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Research questions
 > I want to know, based on the data that is out there, if legalization of marijuana:
 
-•	Reduces the number of arrests of all nonviolent offenses significantly
-•	Would increase the tax income for states and government entities
-•	Would drug usage go down by making it legal
-•	What is the state tax collections for legal rec states vs med only vs no rec/med
-•	What is the public support for legalization
+- Reduces the number of arrests of all nonviolent offenses significantly
+-	Would increase the tax income for states and government entities
+-	Would drug usage go down by making it legal
+-	What is the state tax collections for legal rec states vs med only vs no rec/med
+-	What is the public support for legalization
 
 ## Approach
 
