@@ -1,0 +1,65 @@
+---
+title: "Term Project"
+author: "Burden Joshua"
+Date: 2022-05-15
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+# Legalization of Marijuana
+
+## Introduction
+
+> With more and more states adding medical and recreational cannabis to their ballots, questions are now being asked more openly about the impact of cannabis on public health, crime statistics, and popularity of legalization. The data out there is sparse, but the data that has been collected could show trends and insights on the future of legislation and public sentiment of legalization, along with showing the potential for lowered crime and raised tax revenue in states and at the federal level. 
+
+## Research questions
+> I want to know, based on the data that is out there, if legalization of marijuana:
+
+•	Reduces the number of arrests of all nonviolent offenses significantly
+•	Would increase the tax income for states and government entities
+•	Would drug usage go down by making it legal
+•	What is the state tax collections for legal rec states vs med only vs no rec/med
+•	What is the public support for legalization
+
+## Approach
+
+> I will look at the data that is out there for sales, crime, and public sentiment and see if there is anything that stands out to answer any of the questions above. 
+
+## How your approach addresses (fully or partially) the problem.
+
+> The data will tell me whether or not the any or all of my questions can be answered and if there is discrepancies in the data, more research might be conducted to see if there is correlation. 
+
+## Data (Minimum of 3 Datasets - but no requirement on number of fields or rows)
+
+- https://data.world/denver/marijuana-related-crime
+- https://www.kaggle.com/datasets/tunguz/drug-use-by-age
+- https://www.kaggle.com/datasets/mykeysw/marijuana-sales-forecasting-in-tx
+- https://data.world/sya/marijuana-laws-by-state
+- https://data.world/denver/marijuana-gross-sales
+- https://data.world/health/support-for-legal-marijuana
+- https://data.world/opensavannah/cannabis-justice
+- https://www.kaggle.com/datasets/terenceshin/historical-prices-for-biggest-weed-stocks
+
+
+
+
+## Required Packages
+- Gplot2
+
+## Plots and Table Needs
+- Histograms
+- Scatter plots
+- CDF
+- Linear Regressions
+
+## Questions for future steps
+> Is there more data out there that would help with this research, and how deep should these models go in terms of covering the questions? 
