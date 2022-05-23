@@ -12,6 +12,17 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(fpp2)
+library(quantmod)
+library(tseries)
+library(forecast)
+library(zoo)
+library(ggfortify)
+library(ggplot2)
+library(dplyr)
+set.seed(123)
+
 ```
 
 
@@ -47,9 +58,10 @@ knitr::opts_chunk$set(echo = TRUE)
 - https://data.world/sya/marijuana-laws-by-state
 - https://data.world/denver/marijuana-gross-sales
 - https://data.world/health/support-for-legal-marijuana
-- https://data.world/opensavannah/cannabis-justice
 - https://www.kaggle.com/datasets/terenceshin/historical-prices-for-biggest-weed-stocks
 
+## Bad dataset
+- https://data.world/opensavannah/cannabis-justice  
 
 
 
@@ -63,37 +75,80 @@ knitr::opts_chunk$set(echo = TRUE)
 - Linear Regressions
 
 ## Questions for future steps
+
 > Is there more data out there that would help with this research, and how deep should these models go in terms of covering the questions? 
 
 # Step 2
 
-## At this point you should have framed your problem/topic, described the data, and how you plan to solve the problem.  Now you need to move on to the next step of analyzing and preparing the data.
-- Data importing and cleaning steps are explained in the text and follow a logical process.  Outline your data preparation and cleansing steps.
-- With a clean dataset, show what the final data set looks like. However, do not print off a data frame with 200+ rows; show me the data in the most condensed form possible.
-- What do you not know how to do right now that you need to learn to import and cleanup your dataset?
-- Discuss how you plan to uncover new information in the data that is not self-evident.
-- What are different ways you could look at this data to answer the questions you want to answer?
-- Do you plan to slice and dice the data in different ways, create new variables, or join separate data frames to create new summary information? Explain.
-- How could you summarize your data to answer key questions?
-- What types of plots and tables will help you to illustrate the findings to your questions? Ensure that all graph plots have axis titles, legend if necessary, scales are appropriate, appropriate geoms used, etc.).
-- What do you not know how to do right now that you need to learn to answer your questions?
-- Do you plan on incorporating any machine learning techniques to answer your research questions? Explain.
-- Some additional questions you may want to consider asking yourself as you work through this section of the project:
-- What features could you ﬁlter on?
-- How could arranging your data in different ways help?
-- Can you reduce your data by selecting only certain variables?
-- Could creating new variables add new insights?
-- Could summary statistics at different categorical levels tell you more?
-- How can you incorporate the pipe (%>%) operator to make your code more efﬁcient?
 
-## You can use the following template for Step 2:
-- How to import and clean my data
-- What does the final data set look like?
-- Questions for future steps.
-- What information is not self-evident?
-- What are different ways you could look at this data?
-- How do you plan to slice and dice the data?
-- How could you summarize your data to answer key questions?
-- What types of plots and tables will help you to illustrate the findings to your questions?
-- Do you plan on incorporating any machine learning techniques to answer your research questions? Explain.
-- Questions for future steps.
+### How to import and clean my data
+> Google is very good actually for making suggestions on cleaning datasets. That is my first step, by bringing these datasets into google sheets, I am effectively having google help me get the datasets clean. One other thing that I needed to do was to also parse what is important and what isn't based on the datasets. There were quite a number of datasets that were not helpful or would be considered a large reach for the dataset to fit into the story, so I removed those datasets from the list of datasets I had. I also made the decision early on to remove header column names that either didn't make sense or were not required for the dataset story. 
+
+
+### What does the final data set look like?
+> Summaries of the dataset, as to not get overwelmed by the vast amounts of data. 
+```{r}
+setwd('/Users/joshua/Documents/PERSONAL_GITHUB_REPOS/dsc520/TermProject')
+cosalesrev <- read.csv("data/cleaned_COMJSalesMonthReports2019.csv")
+cotaxrev <- read.csv("data/cleaned_COMJTaxMonthReports2019.csv")
+costatepop <- read.csv("data/cleaned_COCountyPop20142018.csv")
+drug_use <- read.csv("data/cleaned_drug-use-by-age.csv")
+crime_denver <- read.csv("data/cleaned_crime_marijuana.csv")
+legal_support <-read.csv("data/cleaned_legal_marijuana_support.csv")
+```
+
+
+### Summaries of datasets
+```{r}
+# summaries of the datasets
+summary(cosalesrev)
+summary(cotaxrev)
+summary(costatepop)
+summary(drug_use)
+summary(crime_denver)
+summary(legal_support)
+```
+
+
+### glimpse of datasets
+```{r}
+glimpse(cosalesrev)
+glimpse(cotaxrev)
+glimpse(costatepop)
+glimpse(drug_use)
+glimpse(crime_denver)
+glimpse(legal_support)
+```
+### Questions for future steps.
+
+> I am in a situation where there is almost too much data, but not enough connections as there 
+
+### What information is not self-evident?
+
+> I was going to add this datasets to other states, but for many states there is not an aggregate set of information out there for just marijuana related offenses, and without being specific, it becomes difficult to see patterns and trends when the net is cast to wide.
+
+### What are different ways you could look at this data?
+
+> Data like this is not very connected. Making a story out of the datasets requires looking at each dataset as a piece of a puzzle and not trying to force the datasets to work with each other but rather, answer a question and check if the answer relates to the next question. 
+
+### How do you plan to slice and dice the data?
+
+> For one set of data,  I plan to see the sales trend for Colorado based on sales, and tax data. I will also look at if crime went up specifically in Denver, and then see if there is another data set out there to see if there is a relationship with higher sales, with uprising crime and youth uses.
+
+
+### What types of plots and tables will help you to illustrate the findings to your questions?
+
+> barcharts and lineplots seem to make the most sense in these instances. I might also look at doing some data plotting with a scatterplot. 
+
+### Do you plan on incorporating any machine learning techniques to answer your research questions? Explain.
+
+> I am unsure at this time I will add a machine learning algorithm to these datasets. I would like to say yes, but I am still parsing data, and narrowing my search queries to something smaller than my original scope. 
+
+### Questions for future steps.
+
+> Is there more data out there that I just have not found yet that might give me a better and more up to date dataset for the questions I am posing? 
+
+
+
+
+
