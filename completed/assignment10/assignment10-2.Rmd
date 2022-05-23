@@ -1,0 +1,85 @@
+---
+title: "Assignment10-.2"
+author: "Joshua Burden"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggm)
+library(ggplot2)
+library(readr)
+library(pastecs)
+library(plyr)
+library(dplyr)
+library(magrittr)
+library(purrr)
+library(ggplot2)
+library(knitr)
+```
+ 
+```{r include=TRUE, , echo=FALSE, message = FALSE, warning = FALSE}
+setwd("/Users/joshua/Documents/PERSONAL_GITHUB_REPOS/dsc520")
+## Read housing dataset
+TS_df <- read.csv("data/thoraricSurgery.csv")
+```
+
+## Fit a Logistic Regression Model to Thoracic Surgery Binary Dataset
+
+- Fit a binary logistic regression model to the data set that predicts whether or not the patient survived for one year (the Risk1Y variable) after the surgery. 
+- Use the glm() function to perform the logistic regression. 
+- See Generalized Linear Models for an example.
+- Include a summary using the summary() function in your results.
+
+```{r} 
+TS_df$DGN <- as.factor(TS_df$DGN)
+TS_df$PRE14 <- as.factor(TS_df$PRE14)
+thoracicSurgery <- glm(Risk1Yr ~  DGN + PRE4 + PRE5 + PRE6 + PRE7 + PRE8 + PRE9 + PRE10 + PRE11 + PRE14 + PRE17 + PRE19 + PRE25 + PRE30 + PRE32 + AGE, data = TS_df, family = binomial())
+summary(thoracicSurgery)
+```
+
+### According to the summary, which variables had the greatest effect on the survival rate?
+
+> PRE9, PRE14OC14 has the greatest effect on the survival rate.
+
+- To compute the accuracy of your model, use the dataset to predict the outcome variable. 
+- The percent of correct predictions is the accuracy of your model. 
+- What is the accuracy of your model?
+
+```{r}
+predict_data <- predict(thoracicSurgery,TS_df,type="response") > .5
+totalCorrect <- sum( (TS_df$Risk1Yr == "T") == (predict_data) )
+totalPercent <- round(sum( (TS_df$Risk1Yr == "T") == (predict_data) ) / nrow(TS_df),2)*100
+totalRows <- nrow(TS_df)
+totalWrong <- totalRows - totalCorrect
+print(paste0("The model predicted ",totalCorrect," successful outcomes. Out of ",totalRows," elements, ",totalWrong, " elements were found incorrect."))
+print(paste0("Accruacy score: ",round(totalPercent,digits = 2),"%"))
+```
+
+
+## Fit a Logistic Regression Model
+- Fit a logistic regression model to the binary-classifier-data.csv dataset
+- The dataset (found in binary-classifier-data.csv) contains three variables; label, x, and y.
+- The label variable is either 0 or 1 and is the output we want to predict using the x and y variables.
+```{r}
+setwd("/Users/joshua/Documents/PERSONAL_GITHUB_REPOS/dsc520")
+bc_df <- read_csv("data/binary-classifier-data.csv")
+ggplot(bc_df, mapping = aes(x = x, y = y)) + geom_point(mapping = aes(colour = y)) 
+```
+
+### What is the accuracy of the logistic regression classifier?
+```{r logistic accuracy, include=TRUE}
+model1_xy <- glm(label ~ x + y, data = bc_df, family = "binomial")
+model1_x  <- glm(label ~ x, data = bc_df, family = "binomial")
+
+summary(model1_xy)
+summary(model1_x)
+```
+
+
+
+Keep this assignment handy, as you will be comparing your results from this week to next week.
