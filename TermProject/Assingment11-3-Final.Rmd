@@ -1,0 +1,201 @@
+
+---
+title: "Term Project Step 2"
+author: "Burden Joshua"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(fpp2)
+library(quantmod)
+library(tseries)
+library(forecast)
+library(zoo)
+library(ggfortify)
+library(ggplot2)
+library(dplyr)
+set.seed(123)
+
+```
+
+
+
+# Legalization of Marijuana
+
+## Introduction
+
+> With more and more states adding medical and recreational cannabis to their ballots, questions are now being asked more openly about the impact of cannabis on public health, crime statistics, and popularity of legalization. The data out there is sparse, but the data that has been collected could show trends and insights on the future of legislation and public sentiment of legalization, along with showing the potential for lowered crime and raised tax revenue in states and at the federal level. 
+
+## Research questions
+> I want to know, based on the data that is out there, if legalization of marijuana:
+
+- Reduces the number of arrests of all nonviolent offenses significantly
+-	Would increase the tax income for states and government entities
+-	Would drug usage go down by making it legal
+-	What is the state tax collections for legal rec states vs med only vs no rec/med
+-	What is the public support for legalization
+
+## Approach
+
+> I will look at the data that is out there for sales, crime, and public sentiment and see if there is anything that stands out to answer any of the questions above. 
+
+## How your approach addresses (fully or partially) the problem.
+
+> The data will tell me whether or not the any or all of my questions can be answered and if there is discrepancies in the data, more research might be conducted to see if there is correlation. 
+
+## Data (Minimum of 3 Datasets - but no requirement on number of fields or rows)
+
+- https://data.world/denver/marijuana-related-crime
+- https://www.kaggle.com/datasets/tunguz/drug-use-by-age
+- https://www.kaggle.com/datasets/mykeysw/marijuana-sales-forecasting-in-tx
+- https://data.world/sya/marijuana-laws-by-state
+- https://data.world/denver/marijuana-gross-sales
+- https://data.world/health/support-for-legal-marijuana
+- https://www.kaggle.com/datasets/terenceshin/historical-prices-for-biggest-weed-stocks
+
+## Bad dataset
+- https://data.world/opensavannah/cannabis-justice  
+
+
+
+## Required Packages
+- Gplot2
+
+## Plots and Table Needs
+- Histograms
+- Scatter plots
+- CDF
+- Linear Regressions
+
+## Questions for future steps
+
+> Is there more data out there that would help with this research, and how deep should these models go in terms of covering the questions? 
+
+# Step 2
+
+
+### How to import and clean my data
+> Google is very good actually for making suggestions on cleaning datasets. That is my first step, by bringing these datasets into google sheets, I am effectively having google help me get the datasets clean. One other thing that I needed to do was to also parse what is important and what isn't based on the datasets. There were quite a number of datasets that were not helpful or would be considered a large reach for the dataset to fit into the story, so I removed those datasets from the list of datasets I had. I also made the decision early on to remove header column names that either didn't make sense or were not required for the dataset story. 
+
+
+### What does the final data set look like?
+> Summaries of the dataset, as to not get overwelmed by the vast amounts of data. 
+```{r}
+setwd('/Users/joshua/Documents/PERSONAL_GITHUB_REPOS/dsc520/TermProject')
+cosalesrev <- read.csv("data/cleaned_COMJSalesMonthReports2019.csv")
+cotaxrev <- read.csv("data/cleaned_COMJTaxMonthReports2019.csv")
+costatepop <- read.csv("data/cleaned_COCountyPop20142018.csv")
+drug_use <- read.csv("data/cleaned_drug-use-by-age.csv")
+crime_denver <- read.csv("data/cleaned_crime_marijuana.csv")
+legal_support <-read.csv("data/cleaned_legal_marijuana_support.csv")
+```
+
+
+### Summaries of datasets
+```{r}
+# summaries of the datasets
+summary(cosalesrev)
+summary(cotaxrev)
+summary(costatepop)
+summary(drug_use)
+summary(crime_denver)
+summary(legal_support)
+```
+
+
+### glimpse of datasets
+```{r}
+glimpse(cosalesrev)
+glimpse(cotaxrev)
+glimpse(costatepop)
+glimpse(drug_use)
+glimpse(crime_denver)
+glimpse(legal_support)
+```
+### Questions for future steps.
+
+> I am in a situation where there is almost too much data, but not enough connections as there 
+
+### What information is not self-evident?
+
+> I was going to add this datasets to other states, but for many states there is not an aggregate set of information out there for just marijuana related offenses, and without being specific, it becomes difficult to see patterns and trends when the net is cast to wide.
+
+### What are different ways you could look at this data?
+
+> Data like this is not very connected. Making a story out of the datasets requires looking at each dataset as a piece of a puzzle and not trying to force the datasets to work with each other but rather, answer a question and check if the answer relates to the next question. 
+
+### How do you plan to slice and dice the data?
+
+> For one set of data,  I plan to see the sales trend for Colorado based on sales, and tax data. I will also look at if crime went up specifically in Denver, and then see if there is another data set out there to see if there is a relationship with higher sales, with uprising crime and youth uses.
+
+
+### What types of plots and tables will help you to illustrate the findings to your questions?
+
+> barcharts and lineplots seem to make the most sense in these instances. I might also look at doing some data plotting with a scatterplot. 
+
+### Do you plan on incorporating any machine learning techniques to answer your research questions? Explain.
+
+> I am unsure at this time I will add a machine learning algorithm to these datasets. I would like to say yes, but I am still parsing data, and narrowing my search queries to something smaller than my original scope. 
+
+### Questions for future steps.
+
+> Is there more data out there that I just have not found yet that might give me a better and more up to date dataset for the questions I am posing? 
+
+# Step 3
+
+
+## Introduction
+
+> The data collected is attempting to find out if the sale and legality of cannabis shows an increase in crime and use in teens. The data collected shows the sales of cannabis based on annual sales since its legalization recreationally in 2014 in the state of Colorado, and the statistics of crime in the city of Denver. Data that did not support the investigation was scrubbed from the datasets and a new aggregate dataset was formed using the data that best fits the model example we are trying to follow. Results are interesting after running the models and building out visualizations. 
+
+## Findings
+
+> found this: 
+
+```{r}
+
+# Exploratory Analysis CO 2014-2019 marijuana sales & tax revenue
+cosalesrev <- read.csv("data/cleaned_COMJSalesMonthReports2019.csv")
+cotaxrev <- read.csv("data/cleaned_COMJTaxMonthReports2019.csv")
+# Visualize CO 2014-2019 monthly total marijuana sales as a time series
+cosalesrev.ts <- ts(cosalesrev$TotalSales, start = c(2014,1), end = c(2018,12), freq = 12)
+plot(cosalesrev.ts, xlab = "Time", ylab = "2014-2018 CO Monthly Total MJ Sales", bty = "l")
+# Visualize CO 2014-2019 monthly total tax fees revenue as a time series
+cotaxrev.ts <- ts(cotaxrev$TotalTaxFees, start = c(2014,1), end = c(2018,12), freq = 12)
+plot(cotaxrev.ts, xlab = "Time", ylab = "2014-2018 CO Monthly Total TaxFees Rev", bty = "l")
+
+# Exploratory Analysis CO 2014-2018 marijuana sales & tax summaries
+cosalessummary <- read.csv("data/cleaned_COMJSalesSummary2019.csv")
+cotaxsummary <- read.csv("data/cleaned_COMJTaxSummary2019.csv")
+# Visualize CO 2014-2018 total marijuana sales summary by years as time series
+cosalessummary.ts <- ts(cosalessummary$TotalSales, start = c(2014), end = c(2018), freq = 1)
+cosalessummary.lm <- tslm(cosalessummary.ts ~ trend)
+plot(cosalessummary.ts, xlab = "Time", ylab = "2014-2018 CO Yearly Total MJ Sales", bty = "l")
+lines(cosalessummary.lm$fitted, col="blue", lwd = 2)
+
+# Visualize CO 2014-2019 monthly tax summary by years as a time series
+cotaxsummary.ts <- ts(cotaxsummary$TotalTaxFees, start = c(2014), end = c(2018), freq = 1)
+cotaxsummary.lm <- tslm(cotaxsummary.ts ~ trend)
+plot(cotaxsummary.ts, xlab = "Time", ylab = "2014-2018 CO Yearly Total TaxFees Rev", bty = "l")
+lines(cotaxsummary.lm$fitted, col="blue", lwd = 2)
+```
+
+## The problem statement you addressed. 
+
+## Addresssing the data
+
+## Analysis
+
+## Implications
+
+## Limitations
+
+## Concluding Remarks
+
