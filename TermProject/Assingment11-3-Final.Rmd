@@ -1,12 +1,12 @@
 
 ---
-title: "Term Project Step 2"
+title: "Term Project Step 3"
 author: "Burden Joshua"
 date: "`r Sys.Date()`"
 output:
-  pdf_document: default
-  html_document: default
   word_document: default
+  html_document: default
+  pdf_document: default
 ---
 
 
@@ -148,16 +148,8 @@ glimpse(legal_support)
 
 > Is there more data out there that I just have not found yet that might give me a better and more up to date dataset for the questions I am posing? 
 
-# Step 3
-
-
-## Introduction
-
-> The data collected is attempting to find out if the sale and legality of cannabis shows an increase in crime and use in teens. The data collected shows the sales of cannabis based on annual sales since its legalization recreationally in 2014 in the state of Colorado, and the statistics of crime in the city of Denver. Data that did not support the investigation was scrubbed from the datasets and a new aggregate dataset was formed using the data that best fits the model example we are trying to follow. Results are interesting after running the models and building out visualizations. 
 
 ## Findings
-
-> found this: 
 
 ```{r}
 
@@ -187,15 +179,102 @@ plot(cotaxsummary.ts, xlab = "Time", ylab = "2014-2018 CO Yearly Total TaxFees R
 lines(cotaxsummary.lm$fitted, col="blue", lwd = 2)
 ```
 
-## The problem statement you addressed. 
+```{r}
+# Exploratory Analysis CO 2014-2018 population estimates
+costatepop <- read.csv("data/cleaned_COCountyPop20142018.csv")
+# Calculate 2014-2017 CO state pop from all CO counties 
+Year <- c(2014,2015,2016,2017, 2018)
+Colorado <- c((sum(costatepop$X2014Pop)),(sum(costatepop$X2015Pop)), (sum(costatepop$X2016Pop)), (sum(costatepop$X2017Pop)), (sum(costatepop$X2018Pop)))
+# Create a 2014-2017 Colorado state pop df
+costatepop.df <- data.frame(Year,Colorado)
+# Visualize CO pop as a time series
+costatepop.ts <- ts(costatepop.df$Colorado, start = c(2014), end = c(2018), freq = 1) 
+# The Linear trend line on CO Pop time series
+costatepop.lm <- tslm(costatepop.ts ~ trend)
+plot(costatepop.ts, xlab = "Time", ylab = "Colorado Pop", bty = "l")
+lines(costatepop.lm$fitted, col="blue", lwd = 2)
 
-## Addresssing the data
+```
+
+
+```{r}
+library(readxl)
+library(ggplot2)
+
+crime_denver <- read.csv("data/cleaned_crime_marijuana.csv")
+crime_denver[is.na(crime_denver) | crime_denver=="Inf"] = NA
+crime_stat = lm(OFFENSE_CODE~REPORTDATE, data = crime_denver)
+ggplot(crime_stat, aes(OFFENSE_CODE,REPORTDATE))+
+  geom_point() + 
+  geom_smooth(method='lm', se=FALSE, color='turquoise4') +
+  theme_minimal() + 
+  labs(x='Offense Code', y = 'Report Date' , title = 'Linear Regression model of Crime in Denver') +
+  theme(plot.title = element_text(hjust=0.5, size=20, face='bold')) 
+```
+
+
+```{r}
+cleaned_drug_use <- read.csv("data/cleaned_drug-use-by-age.csv")
+summary(cleaned_drug_use)
+ggplot(cleaned_drug_use, aes(x=age, y=marijuana_use_by_percentage)) + geom_point() +  geom_smooth(method=lm)
+ggplot(cleaned_drug_use, aes(x=marijuana_use_by_percentage, y=age)) + geom_point() +  geom_smooth(method=lm)
+
+
+ggplot(cleaned_drug_use, aes(x=marijuana_use_by_percentage)) + geom_histogram()
+
+```
+
+```{r}
+cleaned_support <- read.csv("data/cleaned_legal_marijuana_support.csv")
+summary(cleaned_support)
+head(cleaned_support)
+library(patchwork)
+library(dplyr)
+
+ggplot(cleaned_support, aes(y=Yes_Legal, x=Year)) + geom_point()
+
+ggplot(cleaned_support, aes(y=No_Illegal, x=Year)) + geom_point()
+
+
+
+
+
+```
+
+# Step 3
+
+
+## Introduction
+
+> With more and more states adding medical and recreational cannabis to their ballots, questions are now being asked more openly about the impact of cannabis on public health, crime statistics, and popularity of legalization. The data out there is sparse, but the data that has been collected could show trends and insights on the future of legislation and public sentiment of legalization, along with showing the potential for lowered crime and raised tax revenue in states and at the federal level. 
+
+> The data collected is attempting to find out if the sale and legality of cannabis shows an increase in crime and use in teens. The data collected shows the sales of cannabis based on annual sales since its legalization recreationally in 2014 in the state of Colorado, and the statistics of crime in the city of Denver. Data that did not support the investigation was scrubbed from the datasets and a new aggregate dataset was formed using the data that best fits the model example we are trying to follow. Results are interesting after running the models and building out visualizations. Some models were not as clean as I had hoped to be, but the linear regresssion lines did often model predictions accurrately with only a few outliers.
+
+
+
+
+## The problem statement 
+
+> The data required to answer the questions was not only sparse but also very difficult to parse through. The data in and of itself did not always correlate well with the questions being asked, along with the age old statement of causation does not equal coorelation often occuring. The issues that seemed to be the biggest is that the legalization of recreational marijuana in the state of Denver was the best kept up to date datasets but also tended to end the reporting at 2019. I was not able to find existing data that continued on past a certian point, nor was I able to find out how well the data was kept up. The data that I was able to find also delved into topics and subjects that was outside of scope for my initial line of questioning.  
+
+## How I addressed the Problem Statement
+
+> After cleaning the data as best as possible, piecing together ways to at least make a connection between datasets was the primary focus. It was difficult to parse through everything as the data was not initially related to each other and thus the data did not always play nice with the one another. Metrics also were an issue, but isolating and asking more specific questions made it easier to form the right philosophies and make it easier to understand the data. 
 
 ## Analysis
 
-## Implications
+> From looking at the data, there seems to be little difference in crime related to the legaliziation of marijuana except for 22 instances from 2012 - 2016 and nearly all offenses were Possession, cultivation, or Sales charges. The data suggests that the most of the crimes were sales. The law in Denver states taht the sale of more than 6 ounces – 2.5 pounds of marijuana concentrate is a level 3 drug felony punishable by 2 – 6 years imprisonment as well as a fine between $5,000-$500,000. The sale of more than 2.5 – 25 pounds is a level 2 drug felony punishable by a sentence of 4 – 16 years and a fine of $ 3,000 – $ 750,000. The stats found did not however indicate what statute was broken nor did it display what the offense was other than a category_id and a offense code. 
+
+> Another interesting finding is that the data suggests that public opinion for legalization had a converse relationship sometime between 1990-2000 (most likely sometime around 1995). The only other highest point was sometime in the late 70's for a yes to legalization but was still nowhere near the amount of support in 1995. What happened at that time to change public perception is most likelly many factors that the data could not display nor suggest as to the reason why.
+
+> Also something to look at was that from a usage scenario by age, 18-21 year olds were the group most likely to use marijuana frequently. It tapers off the older one gets by average after the age of 21, while it tapers up at 12 years of age and use is as frequent as the 65 and older group. 
 
 ## Limitations
 
+> The largest limitation I found with these data sets was that the data was large for the crime statistics but also was in a small area (Denver Area) and only covered crime from 2014-2016, where it accounted for all the crime reported such as car theft, homicide, and vandalism, etc.. but crime after legalization for possession and distrubition was lower and also there was not enough detail to describe the instances of why the crime was a crime in the first place. When looking at the datasets for how much revenue was produced, that dataset was the most informative, but also did not show much reason as to why crime and usage either increased or decreased based on the number of sales. The limitations that really stood out where that the data was not directly related as reports, and that all the data only focused on a specific angle of the questions that I was asking. 
+
 ## Concluding Remarks
+> More research must be done with a broader net when gathering information on the impact of recreational sales of Cannabis and crime, usage by users. The research sets were interesting and the topic itself is an interesting question to see if it can be asked and solved. I believe that the data is out there currently, but aggregation of the data is sparce and other data sets seem to be focusing specifically on a broad range question analysis such as "How many people are using X Drug (cocaine, Methamphetamine, Marijuana, Alcohol, etc...)" than how many people are using Marijuana and commiting crimes that is more severe than a drug related offense.
+
+> I think though with the amount of research available that it would be hard to really say with confidence that the recreational sales of marijuana has done anything good or bad for the crime rate/ useage by people, as a model that could be used to predict the crime rate and usage in a newly legal state, but I am confident with the research available that there is at least an implication that with the legalization of Cannabis in a new state, crime related to Cannabis would lower, and usage might go up for those college age, meanwhile seeing a boom in financial resources collected by the state. 
 
