@@ -3,9 +3,9 @@ title: "Assignment 11.2"
 author: "Burden Joshua"
 date: "`r Sys.Date()`"
 output:
+  html_document: default
   word_document: default
   pdf_document: default
-  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -25,7 +25,8 @@ These assignments are here to provide you with an introduction to the “Data Sc
 setwd('/Users/joshua/Documents/PERSONAL_GITHUB_REPOS/dsc520/')
 binary_df <- read.csv('data/binary-classifier-data.csv')
 trinary_df <- read.csv('data/trinary-classifier-data.csv')
-
+summary(binary_df)
+summary(trinary_df)
 ```
 
 Regression algorithms are used to predict numeric quantity while classification algorithms predict categorical outcomes. A spam filter is an example use case for a classification algorithm. The input dataset is emails labeled as either spam (i.e. junk emails) or ham (i.e. good emails). The classification algorithm uses features extracted from the emails to learn which emails fall into which category.
